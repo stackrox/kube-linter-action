@@ -1,7 +1,5 @@
 # kube-linter-action
 
-# kube-linter-action GitHub action
-
 This is a GitHub action for scanning Kubernetes deployment files with [kube-linter](https://github.com/stackrox/kube-linter).  This includes both the action itself (.github/actions) and sample GitHub workflow (.github/workflows) and a test YAML.
 
 Quick deployment:
@@ -15,7 +13,7 @@ The action takes two parameters.
 ```
       - name: Scan repo
         id: kube-lint-repo
-        uses: stackrox/kube-linter-action@v0.0.1
+        uses: stackrox/kube-linter-action@v1
         with:
           directory: yamls
           config: .kube-linter/config.yaml
