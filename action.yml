@@ -7,10 +7,10 @@ inputs:
   config:
     description: 'Path to config file'
     required: false
-outputs:
-  lint-txt:
-    description: 'Output from linting'
-    value: ${{ steps.lint.outputs.lint-txt }}
+  output-file:
+    description: 'Filename to store output.  Default "output/kubelinter.log"'
+    required: false
+    default: 'output/kubelinter.log'
 runs:
   using: "composite"
   steps:
@@ -22,14 +22,18 @@ runs:
         curl -s -L -o kube-linter-linux.tar.gz $LOCATION
         tar -xf kube-linter-linux.tar.gz -C "${GITHUB_WORKSPACE}/"
       shell: bash
-    - id: lint
+    - name: Lint files
+      id: lint
       run: |
+        set +e
         cd "${GITHUB_WORKSPACE}"
+        mkdir output
         if [ -z ${{ inputs.config }} ]; then
           export CONFIG=""
         else
           export CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint ${{ inputs.directory }}
+        ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee ${{ inputs.output-file }}
+        result_code=${PIPESTATUS[0]}
+        exit $result_code
       shell: bash
-
