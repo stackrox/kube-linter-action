@@ -27,7 +27,6 @@ runs:
       run: |
         set +e
         cd "${GITHUB_WORKSPACE}"
-        mkdir output
         if [ -z ${{ inputs.config }} ]; then
           export CONFIG=""
         else
