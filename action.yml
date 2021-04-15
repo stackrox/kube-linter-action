@@ -8,9 +8,9 @@ inputs:
     description: 'Path to config file'
     required: false
   output-file:
-    description: 'Filename to store output.  Default "output/kubelinter.log"'
+    description: 'Filename to store output.  Default "kubelinter.log"'
     required: false
-    default: 'output/kubelinter.log'
+    default: 'kubelinter.log'
 runs:
   using: "composite"
   steps:
