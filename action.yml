@@ -1,5 +1,8 @@
 name: 'kube-linter'
 description: 'Scan directory with kube-linter'
+branding:
+  icon: 'check-circle'
+  color: 'green'
 inputs:
   directory:
     description: 'Directory to scan '
