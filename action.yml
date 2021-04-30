@@ -1,11 +1,11 @@
 name: 'kube-linter'
-description: 'Scan directory with kube-linter'
+description: 'Scan directory or file with kube-linter'
 branding:
   icon: 'check-circle'
   color: 'green'
 inputs:
   directory:
-    description: 'Directory to scan '
+    description: 'Directory or file to scan'
     required: true
   config:
     description: 'Path to config file'
@@ -17,25 +17,35 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download latest kube-linter
+    - name: Download the latest kube-linter
       run: |
-        LOCATION=$(curl -s https://api.github.com/repos/stackrox/kube-linter/releases/latest \
-        | grep "tag_name" \
-        | awk '{print "https://github.com/stackrox/kube-linter/releases/download/" substr($2, 2, length($2)-3) "/kube-linter-linux.tar.gz"}')
-        curl -s -L -o kube-linter-linux.tar.gz $LOCATION
-        tar -xf kube-linter-linux.tar.gz -C "${GITHUB_WORKSPACE}/"
+        set -euo pipefail
+        case "${{ runner.os }}" in
+          macOS)   OS=darwin ;;
+          Windows) OS=windows ;;
+          *)       OS=linux ;;
+        esac
+        RELEASE_INFO=$(curl --silent --show-error --fail https://api.github.com/repos/stackrox/kube-linter/releases/latest)
+        RELEASE_NAME=$(echo "${RELEASE_INFO}" | jq --raw-output ".name")
+        LOCATION=$(echo "${RELEASE_INFO}" \
+          | jq --raw-output ".assets[].browser_download_url" \
+          | grep --fixed-strings kube-linter-${OS}.tar.gz)
+        TARGET=kube-linter-${OS}-${RELEASE_NAME}.tar.gz
+        # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
+        if [ ! -e $TARGET ]; then
+          curl --silent --show-error --fail --location --output $TARGET "$LOCATION"
+          tar -xf $TARGET
+        fi
       shell: bash
     - name: Lint files
-      id: lint
       run: |
+        set -u
         set +e
-        cd "${GITHUB_WORKSPACE}"
         if [ -z ${{ inputs.config }} ]; then
-          export CONFIG=""
+          CONFIG=""
         else
-          export CONFIG="--config ${{ inputs.config }}"
+          CONFIG="--config ${{ inputs.config }}"
         fi
         ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee ${{ inputs.output-file }}
-        result_code=${PIPESTATUS[0]}
-        exit $result_code
+        exit ${PIPESTATUS[0]}
       shell: bash

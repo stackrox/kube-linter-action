@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Scan repo
-        id: kube-lint-repo
-        uses: stackrox/kube-linter-action@v1.0.0
+
+      - name: Scan valid yaml with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.2
         with:
-          directory: yaml
+          directory: sample/valid-yaml
           #config: .kube-linter/config.yaml

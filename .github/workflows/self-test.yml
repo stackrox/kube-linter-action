@@ -1,0 +1,59 @@
+# Use this file during development to test changes to the action.
+# Remember to replace @whatever in `uses: stackrox/kube-linter-action@whatever` with the name of the branch you're developing.
+
+name: kube-linter-action development self-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-scan-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Scan 1 - succeeding
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/valid-yaml
+
+      - name: Scan 2 - failing
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/invalid-yaml
+        continue-on-error: true
+
+  test-scan-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Scan 1 - succeeding
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/valid-yaml
+
+      - name: Scan 2 - failing
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/invalid-yaml
+        continue-on-error: true
+
+  test-scan-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Scan 1 - succeeding
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/valid-yaml
+
+      - name: Scan 2 - failing
+        uses: stackrox/kube-linter-action@misha/update-action
+        with:
+          directory: sample/invalid-yaml
+        continue-on-error: true
