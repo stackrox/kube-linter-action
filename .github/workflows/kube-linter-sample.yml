@@ -16,4 +16,4 @@ jobs:
         uses: stackrox/kube-linter-action@v1.0.2
         with:
           directory: sample/valid-yaml
-          #config: .kube-linter/config.yaml
+          config: sample/.kube-linter-config.yaml

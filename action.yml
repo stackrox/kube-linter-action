@@ -46,6 +46,6 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee ${{ inputs.output-file }}
+        ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee -a ${{ inputs.output-file }}
         exit ${PIPESTATUS[0]}
       shell: bash

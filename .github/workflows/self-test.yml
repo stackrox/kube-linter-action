@@ -1,5 +1,5 @@
-# Use this file during development to test changes to the action.
-# Remember to replace @whatever in `uses: stackrox/kube-linter-action@whatever` with the name of the branch you're developing.
+# This workflow is provided for testing changes to the action.
+# When developing make sure that "Scan 2 - failing" produces expected kube-linter validation logs.
 
 name: kube-linter-action development self-test
 
@@ -16,14 +16,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Scan 1 - succeeding
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/valid-yaml
+          config: sample/.kube-linter-config.yaml
 
       - name: Scan 2 - failing
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/invalid-yaml
+          config: sample/.kube-linter-config.yaml
         continue-on-error: true
 
   test-scan-windows:
@@ -32,14 +34,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Scan 1 - succeeding
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/valid-yaml
+          config: sample/.kube-linter-config.yaml
 
       - name: Scan 2 - failing
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/invalid-yaml
+          config: sample/.kube-linter-config.yaml
         continue-on-error: true
 
   test-scan-macos:
@@ -48,12 +52,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Scan 1 - succeeding
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/valid-yaml
+          config: sample/.kube-linter-config.yaml
 
       - name: Scan 2 - failing
-        uses: stackrox/kube-linter-action@misha/update-action
+        uses: ./
         with:
           directory: sample/invalid-yaml
+          config: sample/.kube-linter-config.yaml
         continue-on-error: true
