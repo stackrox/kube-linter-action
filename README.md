@@ -1,23 +1,28 @@
-# kube-linter-action
+<p align="center"><img src="https://raw.githubusercontent.com/stackrox/kube-linter/main/images/logo/KubeLinter-horizontal.svg" width="360"></p>
 
-This is a GitHub action for scanning Kubernetes deployment files with [kube-linter](https://github.com/stackrox/kube-linter).  This includes both the action itself (.github/actions) and sample GitHub workflow (.github/workflows) and a test YAML.
+# kube-linter-action - KubeLinter GitHub Action
 
-Quick deployment:
+This is a GitHub action for scanning Kubernetes YAML files and Helm charts in your GitHub workflow with [kube-linter](https://github.com/stackrox/kube-linter).
 
-1.  Create a new GitHub repo.
-2.  Push all files from the `sample` directory into the repo.
-3.  The `kube-linter.yml` workflow will run as an action every time there's a new push to this repo.
+## Quickstart
 
-The action takes two parameters.
+1. Copy [.github/workflows/kube-linter-sample.yml](https://github.com/stackrox/kube-linter-action/tree/main/.github/workflows/kube-linter-sample.yml) file to `.github/workflows` directory in your repo.
+2. Adjust scan `directory` to the location where your Kubernetes or Helm files are. See Parameters below.
 
-```
-      - name: Scan repo
-        id: kube-lint-repo
-        uses: stackrox/kube-linter-action@v1
+The new workflow will run every time there's a new push to the repo.  
+Workflow will fail if kube-linter detects issues. You'll find issues in the output of `kube-linter-action`.
+
+### Example
+
+```yaml
+      - name: Scan repo with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.2
         with:
           directory: yamls
           config: .kube-linter/config.yaml
 ```
 
-* `directory` is mandatory -- this is the directory of deployment files to scan.  
-* `config` is optional -- this is the path to a [configuration file](https://github.com/stackrox/kube-linter/blob/main/config.yaml.example) if you wish to use a non-default configuration.
+### Parameters
+
+* `directory` (required) - path of file or directory to scan, absolute or relative to the root of the repo.
+* `config` (optional) - path to a [configuration file](https://docs.kubelinter.io/#/configuring-kubelinter) if you wish to use a non-default configuration.
