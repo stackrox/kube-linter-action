@@ -10,6 +10,10 @@ inputs:
   config:
     description: 'Path to config file'
     required: false
+  format:
+    description: 'Output format. Allowed values: json, plain, sarif. (default is "plain")'
+    required: false
+    default: 'plain'
   output-file:
     description: 'Filename to store output.  Default "kubelinter.log"'
     required: false
@@ -50,6 +54,10 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee -a ${{ inputs.output-file }}
+        if [[ "${{ inputs.format }}" == "plain" ]]; then
+          ./kube-linter $CONFIG lint ${{ inputs.directory }} 2>&1 | tee -a ${{ inputs.output-file }}
+        else
+          ./kube-linter $CONFIG lint ${{ inputs.directory }} --format ${{ inputs.format }} | tee ${{ inputs.output-file }}
+        fi
         exit ${PIPESTATUS[0]}
       shell: bash
