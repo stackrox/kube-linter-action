@@ -28,6 +28,15 @@ jobs:
           config: sample/.kube-linter-config.yaml
         continue-on-error: true
 
+      - name: Scan 2 - failing - SARIF output
+        uses: ./
+        with:
+          directory: sample/invalid-yaml
+          format: sarif
+          config: sample/.kube-linter-config.yaml
+          output-file: kube-linter.output.sarif
+        continue-on-error: true
+
   test-scan-windows:
     runs-on: windows-latest
     steps:
@@ -46,6 +55,15 @@ jobs:
           config: sample/.kube-linter-config.yaml
         continue-on-error: true
 
+      - name: Scan 2 - failing - JSON output
+        uses: ./
+        with:
+          directory: sample/invalid-yaml
+          format: json
+          config: sample/.kube-linter-config.yaml
+          output-file: kube-linter.output.json
+        continue-on-error: true
+
   test-scan-macos:
     runs-on: macos-latest
     steps:
@@ -62,4 +80,13 @@ jobs:
         with:
           directory: sample/invalid-yaml
           config: sample/.kube-linter-config.yaml
+        continue-on-error: true
+
+      - name: Scan 2 - failing - plain output
+        uses: ./
+        with:
+          directory: sample/invalid-yaml
+          format: plain
+          config: sample/.kube-linter-config.yaml
+          output-file: kube-linter.output.txt
         continue-on-error: true
