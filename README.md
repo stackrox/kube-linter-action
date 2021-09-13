@@ -26,3 +26,4 @@ Workflow will fail if kube-linter detects issues. You'll find issues in the outp
 
 * `directory` (required) - path of file or directory to scan, absolute or relative to the root of the repo.
 * `config` (optional) - path to a [configuration file](https://docs.kubelinter.io/#/configuring-kubelinter) if you wish to use a non-default configuration.
+* `format` (optional) - output format. Allowed values: `json`, `plain`, `sarif`. (default is `plain`)
