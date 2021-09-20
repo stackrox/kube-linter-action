@@ -26,8 +26,9 @@ runs:
   using: "composite"
   steps:
     - name: Download kube-linter
+      shell: bash
       run: |
-        set -euo pipefail
+        set -u
         case "${{ runner.os }}" in
           macOS)   OS=darwin ;;
           Windows) OS=windows ;;
@@ -44,16 +45,15 @@ runs:
           curl --silent --show-error --fail --location --output $TARGET "$LOCATION"
           tar -xf $TARGET
         fi
-      shell: bash
     - name: Lint files
+      shell: bash
       run: |
         set -u
-        set +e
         if [ -z ${{ inputs.config }} ]; then
           CONFIG=""
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
+        set +e
         ./kube-linter $CONFIG lint ${{ inputs.directory }} --format ${{ inputs.format }} | tee ${{ inputs.output-file }}
         exit ${PIPESTATUS[0]}
-      shell: bash
