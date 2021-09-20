@@ -10,83 +10,23 @@ on:
     branches: [ main ]
 
 jobs:
-  test-scan-linux:
-    runs-on: ubuntu-latest
+  test-scan:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
 
-      - name: Scan 1 - succeeding
+      - name: 1 - Scan - should succeed
         uses: ./
         with:
           directory: sample/valid-yaml
           config: sample/.kube-linter-config.yaml
 
-      - name: Scan 2 - failing
+      - name: 2 - Scan - should fail
         uses: ./
         with:
           directory: sample/invalid-yaml
           config: sample/.kube-linter-config.yaml
-        continue-on-error: true
-
-      - name: Scan 2 - failing - SARIF output
-        uses: ./
-        with:
-          directory: sample/invalid-yaml
-          format: sarif
-          config: sample/.kube-linter-config.yaml
-          output-file: kube-linter.output.sarif
-        continue-on-error: true
-
-  test-scan-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Scan 1 - succeeding
-        uses: ./
-        with:
-          directory: sample/valid-yaml
-          config: sample/.kube-linter-config.yaml
-
-      - name: Scan 2 - failing
-        uses: ./
-        with:
-          directory: sample/invalid-yaml
-          config: sample/.kube-linter-config.yaml
-        continue-on-error: true
-
-      - name: Scan 2 - failing - JSON output
-        uses: ./
-        with:
-          directory: sample/invalid-yaml
-          format: json
-          config: sample/.kube-linter-config.yaml
-          output-file: kube-linter.output.json
-        continue-on-error: true
-
-  test-scan-macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Scan 1 - succeeding
-        uses: ./
-        with:
-          directory: sample/valid-yaml
-          config: sample/.kube-linter-config.yaml
-
-      - name: Scan 2 - failing
-        uses: ./
-        with:
-          directory: sample/invalid-yaml
-          config: sample/.kube-linter-config.yaml
-        continue-on-error: true
-
-      - name: Scan 2 - failing - plain output
-        uses: ./
-        with:
-          directory: sample/invalid-yaml
-          format: plain
-          config: sample/.kube-linter-config.yaml
-          output-file: kube-linter.output.txt
         continue-on-error: true
