@@ -14,10 +14,14 @@ inputs:
     description: 'Filename to store output.  Default "kubelinter.log"'
     required: false
     default: 'kubelinter.log'
+  version:
+    description: 'Version of kube-linter to use. Default "latest"'
+    required: false
+    default: 'latest'
 runs:
   using: "composite"
   steps:
-    - name: Download the latest kube-linter
+    - name: Download kube-linter
       run: |
         set -euo pipefail
         case "${{ runner.os }}" in
@@ -25,7 +29,7 @@ runs:
           Windows) OS=windows ;;
           *)       OS=linux ;;
         esac
-        RELEASE_INFO=$(curl --silent --show-error --fail https://api.github.com/repos/stackrox/kube-linter/releases/latest)
+        RELEASE_INFO=$(curl --silent --show-error --fail https://api.github.com/repos/stackrox/kube-linter/releases/${{ inputs.version }})
         RELEASE_NAME=$(echo "${RELEASE_INFO}" | jq --raw-output ".name")
         LOCATION=$(echo "${RELEASE_INFO}" \
           | jq --raw-output ".assets[].browser_download_url" \
