@@ -21,7 +21,7 @@ spec:
     spec:
       serviceAccountName: my-service-account
       containers:
-        - image: nginx:latest
+        - image: nginx:1.20
           name: nginx
           securityContext:
             runAsNonRoot: true
