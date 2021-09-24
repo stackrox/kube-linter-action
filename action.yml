@@ -21,7 +21,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download the latest kube-linter
+    - name: Download kube-linter
       run: |
         set -euo pipefail
         case "${{ runner.os }}" in
