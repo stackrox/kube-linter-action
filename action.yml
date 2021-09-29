@@ -11,7 +11,7 @@ inputs:
     description: 'Path to config file'
     required: false
   format:
-    description: 'Output format. Allowed values: json, plain, sarif. Default: "plain"'
+    description: 'Output format. Allowed values: sarif, plain, json. Default: "plain"'
     required: false
     default: 'plain'
   output-file:
