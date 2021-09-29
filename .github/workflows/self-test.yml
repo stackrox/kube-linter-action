@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 1 - Scan - should succeed
+      - name: Scan 1 - should succeed
         uses: ./
         with:
           directory: sample/valid-yaml
@@ -28,7 +28,8 @@ jobs:
           format: ${{ matrix.format }}
           version: ${{ matrix.version }}
 
-      - name: 2 - Scan - should fail
+      - name: Scan 2 - should fail
+        id: failing-scan
         uses: ./
         with:
           directory: sample/invalid-yaml
@@ -36,3 +37,9 @@ jobs:
           format: ${{ matrix.format }}
           version: ${{ matrix.version }}
         continue-on-error: true
+
+      - name: Verify Scan 2 should have failed
+        shell: bash
+        run: |
+          echo "Verifying that kube-linter-action outcome (${{ steps.failing-scan.outcome }}) from Scan 2 is failure."
+          [[ "${{ steps.failing-scan.outcome }}" == "failure" ]]
