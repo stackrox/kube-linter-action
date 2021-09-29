@@ -61,6 +61,4 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        set +e
         ./kube-linter $CONFIG lint ${{ inputs.directory }} --format ${{ inputs.format }} | tee ${{ inputs.output-file }}
-        exit "${PIPESTATUS[0]}"
