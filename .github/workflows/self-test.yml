@@ -14,6 +14,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        format: [ plain, json, sarif ]
+        version: [ latest, 0.2.3 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -23,10 +25,14 @@ jobs:
         with:
           directory: sample/valid-yaml
           config: sample/.kube-linter-config.yaml
+          format: ${{ matrix.format }}
+          version: ${{ matrix.version }}
 
       - name: 2 - Scan - should fail
         uses: ./
         with:
           directory: sample/invalid-yaml
           config: sample/.kube-linter-config.yaml
+          format: ${{ matrix.format }}
+          version: ${{ matrix.version }}
         continue-on-error: true
