@@ -19,7 +19,7 @@ inputs:
     required: false
     default: 'kubelinter.log'
   version:
-    description: 'Version of kube-linter to use. Default: "latest"'
+    description: 'Version of kube-linter to use. E.g. "0.2.4". Default: "latest"'
     required: false
     default: 'latest'
 runs:
