@@ -34,10 +34,14 @@ runs:
           Windows) OS=windows ;;
           *)       OS=linux ;;
         esac
+        RELEASE_URL='https://api.github.com/repos/stackrox/kube-linter/releases/latest'
+        if [ "${{ inputs.version }}" != "latest" ]; then
+          RELEASE_URL='https://api.github.com/repos/stackrox/kube-linter/releases/tags/${{ inputs.version }}'
+        fi
         RELEASE_INFO=$(curl --silent --show-error --fail \
           --header 'authorization: Bearer ${{ github.token }}' \
           --header 'Cache-Control: no-cache, must-revalidate' \
-          'https://api.github.com/repos/stackrox/kube-linter/releases/${{ inputs.version }}')
+          "${RELEASE_URL}")
         RELEASE_NAME=$(echo "${RELEASE_INFO}" | jq --raw-output ".name")
         LOCATION=$(echo "${RELEASE_INFO}" \
           | jq --raw-output ".assets[].browser_download_url" \
