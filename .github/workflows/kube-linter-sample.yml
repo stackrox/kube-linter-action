@@ -1,6 +1,8 @@
-name: Check Kubernetes YAMLs
+name: Check Kubernetes YAMLs with kube-linter
 
 on:
+  # Note that both `push` and `pull_request` triggers should be present for GitHub to consistently present kube-linter
+  # SARIF reports.
   push:
     branches: [ main ]
   pull_request:
@@ -12,8 +14,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Scan valid yaml with kube-linter
-        uses: stackrox/kube-linter-action@v1.0.2
+      # This prepares directory where github/codeql-action/upload-sarif@v1 looks up report files by default.
+      - name: Create ../results directory for SARIF report files
+        shell: bash
+        run: mkdir -p ../results
+
+      - name: Scan yaml files with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.4
         with:
+          # Adjust this directory to the location where your kubernetes resources and helm charts are located.
           directory: sample/valid-yaml
+          # Adjust this to the location of kube-linter config you're using, or remove the setting if you'd like to use
+          # the default config.
           config: sample/.kube-linter-config.yaml
+          # The following two settings make kube-linter produce scan analysis in SARIF format which would then be
+          # made available in GitHub UI via upload-sarif action below.
+          format: sarif
+          output-file: ../results/kube-linter.sarif
+        ## Uncomment the following line if files currently violate kube-linter checks. Failure in kube-linter-action
+        ## will not block the pipeline but kube-linter report will still be produced and scan results available in
+        ## GitHub UI.
+        # continue-on-error: true
+
+      - name: Upload SARIF report files to GitHub
+        uses: github/codeql-action/upload-sarif@v1

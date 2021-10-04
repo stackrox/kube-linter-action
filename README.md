@@ -16,10 +16,12 @@ Workflow will fail if kube-linter detects issues. You'll find issues in the outp
 
 ```yaml
       - name: Scan repo with kube-linter
-        uses: stackrox/kube-linter-action@v1.0.2
+        uses: stackrox/kube-linter-action@v1.0.4
         with:
           directory: yamls
           config: .kube-linter/config.yaml
+          format: sarif
+          output-file: kube-linter.sarif
 ```
 
 ### Parameters
