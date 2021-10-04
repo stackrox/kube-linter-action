@@ -10,8 +10,9 @@ This is a GitHub action for scanning Kubernetes YAML files and Helm charts in yo
 2. Adjust scan `directory` to the location where your Kubernetes or Helm files are. See Parameters below.
 3. Adjust or remove `config` parameter.
 
-The new workflow will run every time there's a new push to the repo.  
-Workflow will fail if kube-linter detects issues. You'll find issues in the output of `kube-linter-action` and in [Security | Code scanning alerts](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/managing-code-scanning-alerts-for-your-repository#viewing-the-alerts-for-a-repository) view your GitHub repo (if you used provided sample workflow).
+The new workflow will run every time there's a new push to the repo master branch and for pull requests.
+
+The workflow will fail if kube-linter detects issues. You'll find issues in the output of `kube-linter-action` and in [Security | Code scanning alerts](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/managing-code-scanning-alerts-for-your-repository#viewing-the-alerts-for-a-repository) view your GitHub repo (if you used provided sample workflow).
 
 ### Example
 
