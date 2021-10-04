@@ -31,8 +31,8 @@ jobs:
           # made available in GitHub UI via upload-sarif action below.
           format: sarif
           output-file: ../results/kube-linter.sarif
-        # The following line prevents aborting the workflow immediately in case files fail kube-linter checks.
-        # This allows the following upload-sarif action to upload the results to owning repo.
+        # The following line prevents aborting the workflow immediately in case your files fail kube-linter checks.
+        # This allows the following upload-sarif action to still upload the results to your GitHub repo.
         continue-on-error: true
 
       - name: Upload SARIF report files to GitHub

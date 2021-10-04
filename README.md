@@ -12,7 +12,7 @@ This is a GitHub action for scanning Kubernetes YAML files and Helm charts in yo
 
 The new workflow will run every time there's a new push to the repo master branch and for pull requests.
 
-The workflow will fail if kube-linter detects issues. You'll find issues in the output of `kube-linter-action` and in [Security | Code scanning alerts](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/managing-code-scanning-alerts-for-your-repository#viewing-the-alerts-for-a-repository) view your GitHub repo (if you used provided sample workflow).
+The workflow will fail if kube-linter detects issues. You'll find issues in the output of `kube-linter-action` and in [Security | Code scanning alerts](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/managing-code-scanning-alerts-for-your-repository#viewing-the-alerts-for-a-repository) view of your GitHub repo (if you used provided sample workflow).
 
 ### Example
 
