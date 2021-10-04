@@ -24,5 +24,10 @@ Workflow will fail if kube-linter detects issues. You'll find issues in the outp
 
 ### Parameters
 
-* `directory` (required) - path of file or directory to scan, absolute or relative to the root of the repo.
-* `config` (optional) - path to a [configuration file](https://docs.kubelinter.io/#/configuring-kubelinter) if you wish to use a non-default configuration.
+| Parameter name | Required? | Description |
+| --- | --- | --- |
+| `directory` | **(required)** | Path of file or directory to scan, absolute or relative to the root of the repo. |
+| `config` | (optional) | Path to a [configuration file](https://docs.kubelinter.io/#/configuring-kubelinter) if you wish to use a non-default configuration. |
+| `format` | (optional) | Output format. Allowed values: `sarif`, `plain`, `json`. Default is `plain`. |
+| `output-file` | (optional) | Path to a file where kube-linter output will be stored. Default is `kube-linter.log`. File will be overwritten if it exists. |
+| `version` | (optional) | kube-linter release version to use, e.g. "0.2.4". The latest available version is used by default. |
