@@ -1,11 +1,11 @@
 name: 'kube-linter'
-description: 'Scan directory or file with kube-linter'
+description: 'Scan directory(s) or file(s) with kube-linter'
 branding:
   icon: 'check-circle'
   color: 'green'
 inputs:
   directory:
-    description: 'Directory or file to scan'
+    description: 'Directory(s) or file(s) to scan'
     required: true
   config:
     description: 'Path to config file'
@@ -65,4 +65,8 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" | tee "${{ inputs.output-file }}"
+
+        # Perform explicit splitting into an array:
+        read -ra directories <<<"${{ inputs.directory }}"
+
+        ./kube-linter $CONFIG lint "${directories[@]}" --format "${{ inputs.format }}" | tee "${{ inputs.output-file }}"
