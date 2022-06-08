@@ -5,7 +5,7 @@ branding:
   color: 'green'
 inputs:
   directory:
-    description: 'Directories or files to scan'
+    description: 'Directories or files to scan separated by spaces'
     required: true
   config:
     description: 'Path to config file'
