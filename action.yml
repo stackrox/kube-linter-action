@@ -1,11 +1,11 @@
 name: 'kube-linter'
-description: 'Scan directory(s) or file(s) with kube-linter'
+description: 'Scan directories or files with kube-linter'
 branding:
   icon: 'check-circle'
   color: 'green'
 inputs:
   directory:
-    description: 'Directory(s) or file(s) to scan'
+    description: 'Directories or files to scan'
     required: true
   config:
     description: 'Path to config file'
