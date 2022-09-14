@@ -34,10 +34,37 @@ runs:
           Windows) OS=windows ;;
           *)       OS=linux ;;
         esac
+
+        # Although releases endpoint is available without authentication, the current github.token is still passed
+        # in order to increase the limit of 60 requests per hour per IP address to a higher value that's also counted
+        # per GitHub account.
+        # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
         RELEASE_URL='https://api.github.com/repos/stackrox/kube-linter/releases/latest'
         if [[ "${{ inputs.version }}" != "latest" ]]; then
           RELEASE_URL='https://api.github.com/repos/stackrox/kube-linter/releases/tags/${{ inputs.version }}'
         fi
+
+        # Download cosign which will be used to check kube-linter's signature.
+        COSIGN_URL='https://api.github.com/repos/sigstore/cosign/releases/latest'
+        COSIGN_RELEASE_INFO="$(curl --silent --show-error --fail \
+          --header 'authorization: Bearer ${{ github.token }}' \
+          --header 'Cache-Control: no-cache, must-revalidate' \
+          "${COSIGN_URL}")"
+        cosign_binary="cosign-${OS}-amd64"
+        if [[ "${OS}" == "windows" ]]; then
+          cosign_binary="cosign-windows-amd64.exe"
+        fi
+
+        COSIGN_LOCATION="$(echo "${COSIGN_RELEASE_INFO}" \
+          | jq --raw-output ".assets[].browser_download_url" \
+          | grep "${cosign_binary}$")"
+
+        if [[ ! -e "$cosign_binary" ]]; then
+          curl --silent --show-error --fail --location --output "$cosign_binary" "$COSIGN_LOCATION"
+          cp "$cosign_binary" cosign
+          chmod +x cosign
+        fi
+
         # Although releases endpoint is available without authentication, the current github.token is still passed
         # in order to increase the limit of 60 requests per hour per IP address to a higher value that's also counted
         # per GitHub account.
@@ -49,13 +76,32 @@ runs:
         RELEASE_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".name")"
         LOCATION="$(echo "${RELEASE_INFO}" \
           | jq --raw-output ".assets[].browser_download_url" \
-          | grep --fixed-strings "kube-linter-${OS}.tar.gz")"
-        TARGET="kube-linter-${OS}-${RELEASE_NAME}.tar.gz"
+          | grep  "kube-linter-linux$")"
+        TARGET="kube-linter-${OS}-${RELEASE_NAME}"
         # Skip downloading release if downloaded already, e.g. when the action is used multiple times.
         if [[ ! -e "$TARGET" ]]; then
           curl --silent --show-error --fail --location --output "$TARGET" "$LOCATION"
-          tar -xf "$TARGET"
+          cp "$TARGET" kube-linter
+          chmod +x kube-linter
         fi
+
+        # Fetch the signature + do signature verification.
+        SIG_LOCATION="$(echo "${RELEASE_INFO}" \
+          | jq --raw-output ".assets[].browser_download_url" \
+          | grep  "kube-linter-linux.sig$")"
+        SIG_TARGET="kube-linter-${OS}-${RELEASE_NAME}.sig"
+        if [[ ! -e "$SIG_TARGET" ]]; then
+          curl --silent --show-error --fail --location --output "$SIG_TARGET" "$SIG_LOCATION"
+          cp "$SIG_TARGET" kube-linter.sig
+        fi
+
+        # Set the public key explicitly when a specific version is required. If not, use the latest one.
+        PUBLIC_KEY_URL="https://raw.githubusercontent.com/stackrox/kube-linter/main/kubelinter-cosign.pub"
+        if [[ "${{ inputs.version }}" != "latest" ]]; then
+          PUBLIC_KEY_URL="https://raw.githubusercontent.com/stackrox/kube-linter/${{ inputs.version }}/kubelinter-cosign.pub"
+        fi
+        ./cosign verify --key "$PUBLIC_KEY_URL" --sig "$SIG_TARGET" "$TARGET"
+
     - name: Lint files
       shell: bash
       run: |
