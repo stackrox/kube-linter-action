@@ -10,6 +10,10 @@ inputs:
   config:
     description: 'Path to config file'
     required: false
+  flags:
+    description: 'Flags to use. Allowed values: --fail-on-invalid-resource --fail-if-no-objects-found'
+    required: false
+    default: ''
   format:
     description: 'Output format. Allowed values: sarif, plain, json. Default: "plain"'
     required: false
@@ -65,4 +69,5 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" | tee "${{ inputs.output-file }}"
+
+        ./kube-linter ${{ inputs.flags }} $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" | tee "${{ inputs.output-file }}"
