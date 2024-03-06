@@ -44,7 +44,7 @@ runs:
         # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
         RELEASE_HEADER=''
         if [ ! -z "${{github.token}}" ]; then
-          RELEASE_HEADER="--header 'authorization: Bearer ${{ github.token }}'"
+          RELEASE_HEADER=("--header" "'authorization: Bearer ${{ github.token }}'")
         fi
         RELEASE_INFO="$(curl --silent --show-error --fail \
           --header 'Cache-Control: no-cache, must-revalidate' \
