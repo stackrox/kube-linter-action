@@ -70,6 +70,6 @@ runs:
           CONFIG="--config ${{ inputs.config }}"
         fi
         
-        FLAG_ARGS=${{ inputs.fail-on-invalid-resource == "true" && '--fail-on-invalid-resource ' }}
+        FLAG_ARGS=${{ inputs.fail-on-invalid-resource == 'true' && '--fail-on-invalid-resource ' }}
 
-        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" FLAG_ARGS | tee "${{ inputs.output-file }}"
+        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" $FLAG_ARGS | tee "${{ inputs.output-file }}"
