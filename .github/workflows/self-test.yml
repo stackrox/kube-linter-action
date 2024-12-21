@@ -73,3 +73,31 @@ jobs:
 
       - name: Upload SARIF output file to GitHub
         uses: github/codeql-action/upload-sarif@v3
+
+  test-fail-on-invalid-resource:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan 1 - should succeed
+        uses: ./
+        with:
+          directory: sample/non-kubernetes-yaml
+          config: sample/.kube-linter-config.yaml
+          format: ${{ matrix.format }}
+          version: ${{ matrix.version }}
+
+      - name: Scan 2 - should fail
+        id: failing-scan
+        uses: ./
+        with:
+          directory: sample/non-kubernetes-yaml
+          config: sample/.kube-linter-config.yaml
+          format: ${{ matrix.format }}
+          version: ${{ matrix.version }}
+          fail-on-invalid-resource: "true"
+        continue-on-error: true
+
+      - name: Verify Scan 2 should have failed
+        shell: bash
+        run: |
+          echo "Verifying that kube-linter-action outcome (${{ steps.failing-scan.outcome }}) from Scan 2 is failure."
+          [[ "${{ steps.failing-scan.outcome }}" == "failure" ]]

@@ -22,6 +22,10 @@ inputs:
     description: 'Version of kube-linter to use. E.g. "0.2.4". Default: "latest"'
     required: false
     default: 'latest'
+  fail-on-invalid-resource:
+    description: 'Error out when we have an invalid resource. Default: false'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -65,4 +69,7 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" | tee "${{ inputs.output-file }}"
+        
+        FLAG_ARGS=${{ inputs.fail-on-invalid-resource == "true" && '--fail-on-invalid-resource ' }}
+
+        ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" FLAG_ARGS | tee "${{ inputs.output-file }}"
