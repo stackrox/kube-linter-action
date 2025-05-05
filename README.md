@@ -36,3 +36,4 @@ The workflow will fail if kube-linter detects issues. You'll find issues in the 
 | `output-file` | (optional) | Path to a file where kube-linter output will be stored. Default is `kube-linter.log`. File will be overwritten if it exists. |
 | `version` | (optional) | kube-linter release version to use, e.g. "0.2.4". The latest available version is used by default. |
 | `fail-on-invalid-resource` | (optional) | Set `true` to error out when we have an invalid resource. |
+| `token` | (optional) | Token to use when pulling release info from github.com |

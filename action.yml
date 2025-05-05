@@ -26,6 +26,10 @@ inputs:
     description: 'Error out when we have an invalid resource. Default: false'
     required: false
     default: 'false'
+  token:
+    description: 'Used to pull release info from GitHub. Does not need to be supplied on github.com.'
+    required: false
+    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 runs:
   using: "composite"
   steps:
@@ -46,8 +50,12 @@ runs:
         # in order to increase the limit of 60 requests per hour per IP address to a higher value that's also counted
         # per GitHub account.
         # Caching is disabled in order not to receive stale responses from Varnish cache fronting GitHub API.
+        AUTH_HEADER=""
+        if [[ "${{ inputs.token }}" != "" ]]; then
+          AUTH_HEADER="Authorization: Bearer ${{ inputs.token }}"
+        fi
         RELEASE_INFO="$(curl --silent --show-error --fail \
-          --header 'authorization: Bearer ${{ github.token }}' \
+          --header "$AUTH_HEADER" \
           --header 'Cache-Control: no-cache, must-revalidate' \
           "${RELEASE_URL}")"
         RELEASE_NAME="$(echo "${RELEASE_INFO}" | jq --raw-output ".name")"
@@ -69,11 +77,11 @@ runs:
         else
           CONFIG="--config ${{ inputs.config }}"
         fi
-        
+
         if [[ "${{ inputs.fail-on-invalid-resource }}" == "true" ]]; then
           FLAG_ARGS="--fail-on-invalid-resource "
         else
           FLAG_ARGS=""
         fi
-        
+
         ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" $FLAG_ARGS | tee "${{ inputs.output-file }}"
