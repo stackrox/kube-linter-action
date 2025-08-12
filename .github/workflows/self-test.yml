@@ -18,7 +18,7 @@ jobs:
         version: [ latest, 0.2.3 ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Scan 1 - should succeed
         uses: ./
@@ -47,7 +47,7 @@ jobs:
   test-with-sarif-upload:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Setup directory where github/codeql-action/upload-sarif@v3 looks up files by default.
       - name: Create ../results directory for sarif files
@@ -77,7 +77,7 @@ jobs:
   test-fail-on-invalid-resource:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Scan 1 - should succeed
         uses: ./
         with:
