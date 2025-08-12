@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: mkdir -p ../results
 
-      - name: Scan 1 - should succeed
+      - name: Scan - should succeed
         uses: ./
         with:
           directory: sample/valid-yaml
@@ -62,7 +62,20 @@ jobs:
           format: sarif
           output-file: ../results/kube-linter-success.sarif
 
-      - name: Scan 2 - should fail
+      - name: Upload SARIF output file to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+
+  test-with-sarif-upload-fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Setup directory where github/codeql-action/upload-sarif@v3 looks up files by default.
+      - name: Create ../results directory for sarif files
+        shell: bash
+        run: mkdir -p ../results
+
+      - name: Scan - should fail
         uses: ./
         with:
           directory: sample/invalid-yaml
@@ -73,6 +86,7 @@ jobs:
 
       - name: Upload SARIF output file to GitHub
         uses: github/codeql-action/upload-sarif@v3
+
 
   test-fail-on-invalid-resource:
     runs-on: ubuntu-latest
