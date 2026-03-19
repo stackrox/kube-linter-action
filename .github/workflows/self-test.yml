@@ -27,6 +27,7 @@ jobs:
           config: sample/.kube-linter-config.yaml
           format: ${{ matrix.format }}
           version: ${{ matrix.version }}
+          verbose: true
 
       - name: Scan 2 - should fail
         id: failing-scan
