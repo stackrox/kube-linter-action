@@ -37,3 +37,4 @@ The workflow will fail if kube-linter detects issues. You'll find issues in the 
 | `version` | (optional) | kube-linter release version to use, e.g. "0.2.4". The latest available version is used by default. |
 | `fail-on-invalid-resource` | (optional) | Set `true` to error out when we have an invalid resource. |
 | `token` | (optional) | Token to use when pulling release info from github.com |
+| `verbose` | (optional) | Set `true` to enable verbose mode |

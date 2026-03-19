@@ -30,6 +30,10 @@ inputs:
     description: 'Used to pull release info from GitHub. Does not need to be supplied on github.com.'
     required: false
     default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+  verbose:
+    description: 'Enable verbose mode'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -82,6 +86,10 @@ runs:
           FLAG_ARGS="--fail-on-invalid-resource "
         else
           FLAG_ARGS=""
+        fi
+
+        if [[ "${{ inputs.verbose }}" == "true" ]]; then
+          FLAG_ARGS="$FLAG_ARGS --verbose"
         fi
 
         ./kube-linter $CONFIG lint "${{ inputs.directory }}" --format "${{ inputs.format }}" $FLAG_ARGS | tee "${{ inputs.output-file }}"
